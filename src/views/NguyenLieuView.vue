@@ -1,7 +1,5 @@
 <template>
   <div class="nguyen-lieu-page-wrapper font-general">
-    
-
     <main class="main-content bg-white pb-5">
       <div class="container-fluid px-lg-5">
         <nav aria-label="breadcrumb" class="py-3">
@@ -12,31 +10,32 @@
           </ol>
         </nav>
 
-        <div id="nguyenLieuCarousel" class="carousel slide mb-5 rounded overflow-hidden shadow-sm" data-bs-ride="carousel">
-          <div class="carousel-indicators">
-            <button v-for="(banner, index) in banners" :key="'ind'+index" type="button" data-bs-target="#nguyenLieuCarousel" :data-bs-slide-to="index" :class="{ active: index === 0 }"></button>
-          </div>
-          <div class="carousel-inner">
-            <div class="carousel-item" v-for="(banner, index) in banners" :key="index" :class="{ active: index === 0 }">
-              <img :src="banner.image" class="d-block w-100 banner-img" :alt="banner.alt">
-              <div class="carousel-caption d-none d-md-block text-start banner-caption">
-                <h2 class="display-5 fw-bold text-uppercase mb-2 animate-slide-right" v-html="banner.title"></h2>
-                <p class="lead mb-4 animate-slide-up">{{ banner.desc }}</p>
-                <button v-if="banner.title" class="btn btn-main-brown px-4 py-2 rounded-pill shadow animate-fade-in">Xem chi tiết</button>
-              </div>
-              <div class="overlay-gradient"></div>
+        <section v-if="categoryBanners.length > 0" class="category-banner-wrapper mb-5 mt-3">
+          <div id="categoryCarousel" class="carousel slide rounded overflow-hidden shadow-sm" data-bs-ride="carousel" data-bs-interval="5000">
+            <div class="carousel-indicators">
+              <button v-for="(banner, index) in categoryBanners" :key="'cat-ind-' + banner.id"
+                      type="button" data-bs-target="#categoryCarousel" :data-bs-slide-to="index" 
+                      :class="{ active: index === 0 }"></button>
             </div>
+            <div class="carousel-inner">
+              <div v-for="(banner, index) in categoryBanners" :key="banner.id" 
+                   :class="['carousel-item', { active: index === 0 }]">
+                <router-link :to="banner.lienKet || '#'">
+                  <img :src="banner.duongDanAnh" class="d-block w-100 object-fit-cover" 
+                       style="height: 350px;" :alt="banner.tieuDe || 'Banner Sản Phẩm'">
+                </router-link>
+              </div>
+            </div>
+            <template v-if="categoryBanners.length > 1">
+              <button class="carousel-control-prev" type="button" data-bs-target="#categoryCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon p-3 bg-dark rounded-circle opacity-50"></span>
+              </button>
+              <button class="carousel-control-next" type="button" data-bs-target="#categoryCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon p-3 bg-dark rounded-circle opacity-50"></span>
+              </button>
+            </template>
           </div>
-          <button class="carousel-control-prev" type="button" data-bs-target="#nguyenLieuCarousel" data-bs-slide="prev">
-            <span class="carousel-control-prev-icon bg-dark rounded-circle p-3" aria-hidden="true"></span>
-            <span class="visually-hidden">Previous</span>
-          </button>
-          <button class="carousel-control-next" type="button" data-bs-target="#nguyenLieuCarousel" data-bs-slide="next">
-            <span class="carousel-control-next-icon bg-dark rounded-circle p-3" aria-hidden="true"></span>
-            <span class="visually-hidden">Next</span>
-          </button>
-        </div>
-
+        </section>
         <div class="row g-4">
           <aside class="col-lg-3">
             <div class="sidebar-block mb-4">
@@ -189,6 +188,7 @@
       </div>
     </footer>
   </div>
+
   <div class="floating-contact">
       <a href="tel:0786667447" class="contact-item hotline" title="Gọi hotline">
         <div class="icon-wrapper">
@@ -218,59 +218,49 @@
 </template>
 
 <script>
-import banner1 from '@/assets/images/bannerhotdeal1.png';
-import banner2 from '@/assets/images/bannerhotdeal2.png';
-import banner3 from '@/assets/images/bannerhotdeal3.png';
+// 1. Import Service
+import { bannerService } from '@/services/bannerService';
 
 export default {
   data() {
     return {
-      banners: [
-        {
-          image: banner1,
-          alt: 'Nguyên liệu Phở',
-          title: 'GIA VỊ NẤU PHỞ <br><span class="text-vipep-green">CHUẨN VỊ HÀ THÀNH</span>',
-          desc: 'Set nguyên liệu đầy đủ hồi, quế, thảo quả cho nồi phở thơm lừng.'
-        },
-        {
-          image: banner2,
-          alt: 'Nguyên liệu Lẩu',
-          title: 'THẾ GIỚI LẨU <br><span class="text-vipep-green">ĐẬM ĐÀ KHÓ CƯỠNG</span>',
-          desc: 'Từ lẩu Thái chua cay đến lẩu Tứ Xuyên nồng nàn.'
-        },
-        {
-          image: banner3,
-          alt: 'Đồ nướng & kho',
-          title: 'ƯỚP NƯỚNG & KHO <br><span class="text-vipep-green">TIỆN LỢI TẠI NHÀ</span>',
-          desc: 'Gói gia vị hoàn chỉnh giúp việc nấu ăn trở nên đơn giản.'
-        }
-      ],
+      categoryBanners: [],
+
       priceFilters: [
-        'Dưới 15.000đ', '15.000đ - 30.000đ', '30.000đ - 50.000đ', 
-        '50.000đ - 100.000đ', 'Trên 100.000đ'
+        'Dưới 100.000đ', '100.000đ - 200.000đ', '200.000đ - 300.000đ', 
+        '300.000đ - 500.000đ', 'Trên 500.000đ'
       ],
       categories: [
-        { name: 'Nguyên liệu nấu Phở', count: 8 },
-        { name: 'Gói gia vị nấu Lẩu', count: 12 },
-        { name: 'Gia vị Nướng & Kho', count: 15 },
-        { name: 'Nấm & Đồ khô', count: 10 },
-        { name: 'Thảo mộc nấu ăn', count: 20 }
+        { name: 'Combo Ăn Dặm', count: 5 },
+        { name: 'Combo Nấu Phở/Lẩu', count: 8 },
+        { name: 'Combo Tẩm Ướp', count: 12 },
+        { name: 'Combo Tiết Kiệm', count: 6 },
+        { name: 'Hộp Quà Biếu', count: 4 }
       ],
-      // DỮ LIỆU SẢN PHẨM NGUYÊN LIỆU
       products: [
-        { name: "Set Gia Vị Nấu Phở Bò Vipep 1 Gói", price: "25,000đ", oldPrice: "30,000đ", discount: 15, image: "https://placehold.co/300x300?text=Set+Pho+Bo" },
-        { name: "Set Gia Vị Nấu Phở Gà Vipep 1 Gói", price: "25,000đ", oldPrice: "30,000đ", discount: 15, image: "https://placehold.co/300x300?text=Set+Pho+Ga" },
-        { name: "Gói Gia Vị Lẩu Thái Tomyum Vipep 50g", price: "18,000đ", oldPrice: "22,000đ", discount: 18, image: "https://placehold.co/300x300?text=Lau+Thai" },
-        { name: "Gói Gia Vị Bò Kho Vipep 25g", price: "15,000đ", oldPrice: null, discount: null, image: "https://placehold.co/300x300?text=Bo+Kho" },
-        { name: "Gói Gia Vị Vịt Tiềm Thuốc Bắc Vipep", price: "35,000đ", oldPrice: "45,000đ", discount: 22, image: "https://placehold.co/300x300?text=Vit+Tiem" },
-        { name: "Bột Ngũ Vị Hương Vipep Gói 10g", price: "5,000đ", oldPrice: null, discount: null, image: "https://placehold.co/300x300?text=Ngu+Vi+Huong" },
-        { name: "Bột Điều Màu (Cà Ri) Vipep Hũ 50g", price: "28,000đ", oldPrice: "35,000đ", discount: 20, image: "https://placehold.co/300x300?text=Bot+Dieu" },
-        { name: "Nấm Hương Khô Cao Cấp Vipep 100g", price: "65,000đ", oldPrice: "80,000đ", discount: 18, image: "https://placehold.co/300x300?text=Nam+Huong" },
-        { name: "Mộc Nhĩ Rừng Thái Sợi Vipep 50g", price: "30,000đ", oldPrice: null, discount: null, image: "https://placehold.co/300x300?text=Moc+Nhi" },
-        { name: "Gói Gia Vị Nấu Bún Bò Huế Vipep", price: "22,000đ", oldPrice: "28,000đ", discount: 21, image: "https://placehold.co/300x300?text=Bun+Bo+Hue" },
-        { name: "Thảo Quả Khô Tây Bắc Vipep 50g", price: "55,000đ", oldPrice: "65,000đ", discount: 15, image: "https://placehold.co/300x300?text=Thao+Qua" },
-        { name: "Set Nguyên Liệu Gà Tần Sâm 100g", price: "95,000đ", oldPrice: "120,000đ", discount: 20, image: "https://placehold.co/300x300?text=Ga+Tan+Sam" }
+        { name: "Combo Gia Vị Nấu Phở Bò Hà Nội (Set 5 gói)", price: "85,000đ", oldPrice: "100,000đ", discount: 15, image: "https://placehold.co/300x300?text=Combo+Pho+Bo" },
+        // ... (Giữ nguyên các product của bạn)
       ]
+    }
+  },
+  // 2. Thêm async
+  async mounted() {
+    try {
+      // 3. GỌI API LẤY BANNER VỊ TRÍ 'CATEGORY'
+      const data = await bannerService.getBannersByPosition('CATEGORY');
+      
+      if (data && data.length > 0) {
+        // Gán data thật
+        this.categoryBanners = data;
+      } else {
+        // Fallback data ảo
+        this.categoryBanners = [
+          { id: 98, duongDanAnh: 'https://placehold.co/1920x350/8b572a/ffffff?text=Banner+Sản+Phẩm+1', lienKet: '#', tieuDe: 'Banner Sản Phẩm Chung 1' },
+          { id: 99, duongDanAnh: 'https://placehold.co/1920x350/7eb33d/ffffff?text=Banner+Sản+Phẩm+2', lienKet: '#', tieuDe: 'Banner Sản Phẩm Chung 2' }
+        ];
+      }
+    } catch (error) {
+      console.error("Lỗi lấy banner danh mục:", error);
     }
   },
   methods: {
@@ -309,34 +299,16 @@ export default {
 .nav-link:hover, .nav-link.router-link-active { color: #7eb33d !important; }
 
 /* ================= BANNER SLIDER (CAROUSEL) ================= */
-#nguyenLieuCarousel {
+#categoryCarousel {
   position: relative;
 }
 .carousel-item {
-  height: 400px; /* Chiều cao cố định cho banner */
+  height: 350px;
 }
 .banner-img {
   height: 100%;
-  object-fit: cover; /* Đảm bảo ảnh phủ kín khung mà không bị méo */
+  object-fit: cover;
 }
-.overlay-gradient {
-  position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-  background: linear-gradient(to right, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0) 60%);
-  pointer-events: none;
-}
-.banner-caption {
-  top: 50%; left: 8%; transform: translateY(-50%); bottom: auto;
-  z-index: 2;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.5);
-}
-
-/* Animation cho chữ trong banner */
-@keyframes slideRight { from { opacity: 0; transform: translateX(-30px); } to { opacity: 1; transform: translateX(0); } }
-@keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-
-.carousel-item.active .animate-slide-right { animation: slideRight 0.8s ease-out forwards; }
-.carousel-item.active .animate-slide-up { animation: slideUp 0.8s ease-out 0.3s forwards; opacity: 0; }
-.carousel-item.active .animate-fade-in { animation: slideUp 0.8s ease-out 0.6s forwards; opacity: 0; }
 
 /* ================= SIDEBAR ================= */
 .sidebar-title { background-color: #4d3105; color: #fff; padding: 10px 15px; font-size: 16px; font-weight: bold; border-radius: 8px 8px 0 0; margin-bottom: 0; }
@@ -363,125 +335,30 @@ export default {
 .pagination .page-link { color: #333; border: none; margin: 0 3px; border-radius: 4px; font-weight: 600; }
 .pagination .page-item.active .page-link { background-color: #4d3105; color: white; }
 
-/* ================= FOOTER & ANIMATION ================= */
-.wave-separator {
-  width: 100%;
-  height: 120px;
-  background: #ffffff; /* Giữ nền trắng để khớp với phần Main bên trên */
-  position: relative;
-  margin-bottom: -1px; /* Tránh đường kẻ hở siêu nhỏ giữa SVG và Footer */
-}
-
-.wave-svg {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  height: 120px;
-  display: block; /* Loại bỏ khoảng trống inline */
-}
-@keyframes shake { 0% { transform: rotate(0deg); } 25% { transform: rotate(10deg); } 75% { transform: rotate(-10deg); } 100% { transform: rotate(0deg); } }
-.shake-animation { animation: shake 1.5s infinite ease-in-out; }
+/* ================= FOOTER ================= */
+.wave-separator { width: 100%; height: 120px; background: #ffffff; position: relative; margin-bottom: -1px; }
+.wave-svg { position: absolute; bottom: 0; width: 100%; height: 120px; display: block; }
 
 /* FOOTER STYLE */
 .text-vipep-green { color: #28a745 !important; }
 .hover-white:hover { color: #fff !important; text-decoration: underline !important; }
 .pointer { cursor: pointer; transition: transform 0.3s ease; }
 .pointer:hover { transform: scale(1.1); }
+
 /* ================= FLOATING CONTACT BUTTONS ================= */
-.floating-contact {
-  position: fixed;
-  right: 20px;
-  bottom: 80px;
-  z-index: 9999;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.contact-item {
-  display: flex;
-  align-items: center;
-  text-decoration: none;
-  transition: all 0.3s ease;
-  position: relative;
-  flex-direction: row-reverse; /* Để nhãn hiện ra bên trái icon */
-}
-
-.icon-wrapper {
-  width: 45px;
-  height: 45px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-size: 22px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-  z-index: 2;
-  background: white;
-}
-
-/* Màu sắc từng loại */
+.floating-contact { position: fixed; right: 20px; bottom: 80px; z-index: 9999; display: flex; flex-direction: column; gap: 12px; }
+.contact-item { display: flex; align-items: center; text-decoration: none; transition: all 0.3s ease; position: relative; flex-direction: row-reverse; }
+.icon-wrapper { width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 22px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); z-index: 2; background: white; }
 .hotline .icon-wrapper { background: #dc3545; animation: pulse-red 2s infinite; }
 .zalo .icon-wrapper { background: #0088ff; }
 .messenger .icon-wrapper { background: #0078ff; }
-.scroll-top { 
-  background: #4d3105; 
-  color: white; 
-  border: none; 
-  width: 45px; 
-  height: 45px; 
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 24px;
-}
+.scroll-top { background: #4d3105; color: white; border: none; width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; }
+.contact-item .label { background: rgba(0, 0, 0, 0.7); color: white; padding: 5px 15px; border-radius: 20px; font-size: 13px; font-weight: 600; margin-right: 10px; opacity: 0; visibility: hidden; transform: translateX(20px); transition: all 0.3s ease; white-space: nowrap; }
+.contact-item:hover .label { opacity: 1; visibility: visible; transform: translateX(0); }
+.contact-item:hover .icon-wrapper { transform: scale(1.1); }
 
-/* Nhãn chữ (Label) hiện ra khi hover */
-.contact-item .label {
-  background: rgba(0, 0, 0, 0.7);
-  color: white;
-  padding: 5px 15px;
-  border-radius: 20px;
-  font-size: 13px;
-  font-weight: 600;
-  margin-right: 10px;
-  opacity: 0;
-  visibility: hidden;
-  transform: translateX(20px);
-  transition: all 0.3s ease;
-  white-space: nowrap;
-}
+@keyframes pulse-red { 0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(220, 53, 69, 0); } 100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(220, 53, 69, 0); } }
 
-.contact-item:hover .label {
-  opacity: 1;
-  visibility: visible;
-  transform: translateX(0);
-}
-
-.contact-item:hover .icon-wrapper {
-  transform: scale(1.1);
-}
-
-/* Hiệu ứng rung cho Hotline */
-@keyframes pulse-red {
-  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.7); }
-  70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(220, 53, 69, 0); }
-  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(220, 53, 69, 0); }
-}
-
-/* Mobile responsive */
-@media (max-width: 768px) {
-  .floating-contact { right: 10px; bottom: 100px; }
-  .icon-wrapper { width: 40px; height: 40px; font-size: 20px; }
-  .contact-item .label { display: none; } /* Tắt label trên mobile cho gọn */
-}
-/* Hiển thị menu con khi di chuột vào menu cha */
-.dropdown-menu li:hover > .dropdown-menu {
-  display: block;
-  top: 0;
-  left: 100%; /* Đẩy menu con sang bên phải */
-  margin-top: -1px;
-}
+@media (max-width: 768px) { .floating-contact { right: 10px; bottom: 100px; } .icon-wrapper { width: 40px; height: 40px; font-size: 20px; } .contact-item .label { display: none; } }
+.dropdown-menu li:hover > .dropdown-menu { display: block; top: 0; left: 100%; margin-top: -1px; }
 </style>

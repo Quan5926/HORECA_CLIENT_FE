@@ -1,7 +1,5 @@
 <template>
   <div class="combo-page-wrapper font-general">
-   
-
     <main class="main-content bg-white pb-5">
       <div class="container-fluid px-lg-5">
         <nav aria-label="breadcrumb" class="py-3">
@@ -11,32 +9,33 @@
             <li class="breadcrumb-item active text-main-brown fw-bold" aria-current="page">Combo Nấu Ăn</li>
           </ol>
         </nav>
-
-        <div id="comboCarousel" class="carousel slide mb-5 rounded overflow-hidden shadow-sm" data-bs-ride="carousel">
-          <div class="carousel-indicators">
-            <button v-for="(banner, index) in banners" :key="'ind'+index" type="button" data-bs-target="#comboCarousel" :data-bs-slide-to="index" :class="{ active: index === 0 }"></button>
-          </div>
-          <div class="carousel-inner">
-            <div class="carousel-item" v-for="(banner, index) in banners" :key="index" :class="{ active: index === 0 }">
-              <img :src="banner.image" class="d-block w-100 banner-img" :alt="banner.alt">
-              <div class="carousel-caption d-none d-md-block text-start banner-caption">
-                <h2 class="display-5 fw-bold text-uppercase mb-2 animate-slide-right" v-html="banner.title"></h2>
-                <p class="lead mb-4 animate-slide-up">{{ banner.desc }}</p>
-                <button v-if="banner.title" class="btn btn-main-brown px-4 py-2 rounded-pill shadow animate-fade-in">Khám phá ngay</button>
-              </div>
-              <div class="overlay-gradient"></div>
+    
+        <section v-if="categoryBanners.length > 0" class="category-banner-wrapper mb-5 mt-3">
+          <div id="categoryCarousel" class="carousel slide rounded overflow-hidden shadow-sm" data-bs-ride="carousel" data-bs-interval="5000">
+            <div class="carousel-indicators">
+              <button v-for="(banner, index) in categoryBanners" :key="'cat-ind-' + banner.id"
+                      type="button" data-bs-target="#categoryCarousel" :data-bs-slide-to="index" 
+                      :class="{ active: index === 0 }"></button>
             </div>
+            <div class="carousel-inner">
+              <div v-for="(banner, index) in categoryBanners" :key="banner.id" 
+                   :class="['carousel-item', { active: index === 0 }]">
+                <router-link :to="banner.lienKet || '#'">
+                  <img :src="banner.duongDanAnh" class="d-block w-100 object-fit-cover" 
+                       style="height: 350px;" :alt="banner.tieuDe || 'Banner Sản Phẩm'">
+                </router-link>
+              </div>
+            </div>
+            <template v-if="categoryBanners.length > 1">
+              <button class="carousel-control-prev" type="button" data-bs-target="#categoryCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon p-3 bg-dark rounded-circle opacity-50"></span>
+              </button>
+              <button class="carousel-control-next" type="button" data-bs-target="#categoryCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon p-3 bg-dark rounded-circle opacity-50"></span>
+              </button>
+            </template>
           </div>
-          <button class="carousel-control-prev" type="button" data-bs-target="#comboCarousel" data-bs-slide="prev">
-            <span class="carousel-control-prev-icon bg-dark rounded-circle p-3" aria-hidden="true"></span>
-            <span class="visually-hidden">Previous</span>
-          </button>
-          <button class="carousel-control-next" type="button" data-bs-target="#comboCarousel" data-bs-slide="next">
-            <span class="carousel-control-next-icon bg-dark rounded-circle p-3" aria-hidden="true"></span>
-            <span class="visually-hidden">Next</span>
-          </button>
-        </div>
-
+        </section>
         <div class="row g-4">
           <aside class="col-lg-3">
             <div class="sidebar-block mb-4">
@@ -130,128 +129,23 @@
       </div>
     </main>
 
-    <div class="wave-separator">
-      <svg viewBox="0 0 1440 120" preserveAspectRatio="none" class="wave-svg">
-        <path d="M0,0 C360,100 1080,20 1440,80 L1440,120 L0,120 Z" fill="#212529"></path>
-      </svg>
-    </div>
-
-    <footer class="footer-custom py-5 bg-dark text-white">
-      <div class="container">
-        <div class="row g-4">
-          <div class="col-md-3">
-            <h5 class="footer-heading text-vipep-green mb-3">CÔNG TY ONE HORECA</h5>
-            <p class="footer-text small text-white-50">Chuyên cung cấp các giải pháp F&B, nguyên liệu pha chế và thiết bị nhà hàng khách sạn chất lượng cao.</p>
-            <p class="footer-text small">
-              <i class="bi bi-geo-alt-fill text-vipep-green me-2"></i> 47 Hàng Chiếu, P. Hoàn Kiếm, Hà Nội<br>
-              <i class="bi bi-telephone-fill text-vipep-green me-2"></i> <strong>0786667447</strong><br>
-              <i class="bi bi-envelope-fill text-vipep-green me-2"></i> ctyhorecaone@gmail.com
-            </p>
-          </div>
-          <div class="col-md-3">
-            <h5 class="footer-heading text-uppercase mb-3">Về Chúng Tôi</h5>
-            <ul class="list-unstyled footer-links small">
-              <li class="mb-2"><router-link to="/" class="text-white-50 text-decoration-none hover-white">Trang chủ</router-link></li>
-              <li class="mb-2"><router-link to="/ve-vipep" class="text-white-50 text-decoration-none hover-white">Giới thiệu One Horeca</router-link></li>
-              <li class="mb-2"><router-link to="/san-pham" class="text-white-50 text-decoration-none hover-white">Sản phẩm</router-link></li>
-              <li class="mb-2"><router-link to="/tin-tuc" class="text-white-50 text-decoration-none hover-white">Tin tức & Sự kiện</router-link></li>
-              <li class="mb-2"><router-link to="/lien-he" class="text-white-50 text-decoration-none hover-white">Liên hệ</router-link></li>
-            </ul>
-          </div>
-          <div class="col-md-3">
-            <h5 class="footer-heading text-uppercase mb-3">Hỗ Trợ Khách Hàng</h5>
-            <ul class="list-unstyled footer-links small">
-              <li class="mb-2"><a href="#" class="text-white-50 text-decoration-none hover-white">Chính sách đổi trả</a></li>
-              <li class="mb-2"><a href="#" class="text-white-50 text-decoration-none hover-white">Chính sách bảo mật</a></li>
-              <li class="mb-2"><a href="#" class="text-white-50 text-decoration-none hover-white">Điều khoản dịch vụ</a></li>
-              <li class="mb-2"><a href="#" class="text-white-50 text-decoration-none hover-white">Hướng dẫn mua hàng</a></li>
-            </ul>
-          </div>
-          <div class="col-md-3">
-            <h5 class="footer-heading text-uppercase mb-3">Đăng ký nhận tin</h5>
-            <p class="small text-white-50">Nhận thông tin khuyến mãi mới nhất từ One Horeca.</p>
-            <div class="input-group mb-3">
-              <input type="text" class="form-control form-control-sm rounded-start-pill" placeholder="Email của bạn...">
-              <button class="btn btn-success btn-sm rounded-end-pill" type="button">Gửi</button>
-            </div>
-            <div class="social-icons d-flex gap-3 mt-3">
-              <i class="bi bi-facebook fs-4 pointer text-primary bg-white rounded-circle px-1"></i>
-              <i class="bi bi-youtube fs-4 pointer text-danger bg-white rounded-circle px-1"></i>
-              <i class="bi bi-tiktok fs-4 pointer text-dark bg-white rounded-circle px-1"></i>
-            </div>
-          </div>
-        </div>
-        <hr class="my-4 border-secondary">
-        <div class="d-md-flex justify-content-between text-center small opacity-75">
-          <p class="mb-0">© 2026 Copyright <strong>OneHoreca</strong>. All Rights Reserved.</p>
-          <p class="mb-0">Designed by OneHoreca Team</p>
-        </div>
-      </div>
-    </footer>
-  </div>
-
-  <div class="floating-contact">
-      <a href="tel:0786667447" class="contact-item hotline" title="Gọi hotline">
-        <div class="icon-wrapper">
-          <i class="bi bi-telephone-fill"></i>
-        </div>
-        <span class="label">0786.667.447</span>
-      </a>
-
-      <a href="https://zalo.me/0786667447" target="_blank" class="contact-item zalo" title="Chat Zalo">
-        <div class="icon-wrapper">
-          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Icon_of_Zalo.svg/1200px-Icon_of_Zalo.svg.png" alt="Zalo" width="24">
-        </div>
-        <span class="label">Zalo ngay</span>
-      </a>
-
-      <a href="https://m.me/your-fanpage-id" target="_blank" class="contact-item messenger" title="Chat Messenger">
-        <div class="icon-wrapper">
-          <i class="bi bi-messenger"></i>
-        </div>
-        <span class="label">Messenger</span>
-      </a>
-
-      <button @click="scrollToTop" class="contact-item scroll-top" id="backToTop">
-        <i class="bi bi-arrow-up-short"></i>
-      </button>
+   
     </div>
 </template>
 
 <script>
-// Sử dụng chung file ảnh banner hoặc thay bằng ảnh khác tùy ý bạn
-import banner1 from '@/assets/images/bannerhotdeal1.png';
-import banner2 from '@/assets/images/bannerhotdeal2.png';
-import banner3 from '@/assets/images/bannerhotdeal3.png';
+// 1. Import Service
+import { bannerService } from '@/services/bannerService';
 
 export default {
   data() {
     return {
-      banners: [
-        {
-          image: banner1,
-          alt: 'Combo Nấu Phở',
-          title: 'COMBO GIA VỊ <br><span class="text-vipep-green">NẤU PHỞ CHUẨN VỊ</span>',
-          desc: 'Trọn bộ nguyên liệu hồi, quế, thảo quả... cho nồi nước dùng đậm đà.'
-        },
-        {
-          image: banner2,
-          alt: 'Combo Tiết Kiệm',
-          title: 'MUA COMBO <br><span class="text-vipep-green">TIẾT KIỆM ĐẾN 30%</span>',
-          desc: 'Giải pháp kinh tế và tiện lợi cho căn bếp gia đình.'
-        },
-        {
-          image: banner3,
-          alt: 'Quà Tặng Gia Vị',
-          title: 'HỘP QUÀ GIA VỊ <br><span class="text-vipep-green">TRAO GỬI YÊU THƯƠNG</span>',
-          desc: 'Món quà sức khỏe ý nghĩa từ thiên nhiên.'
-        }
-      ],
+      categoryBanners: [],
+
       priceFilters: [
         'Dưới 100.000đ', '100.000đ - 200.000đ', '200.000đ - 300.000đ', 
         '300.000đ - 500.000đ', 'Trên 500.000đ'
       ],
-      // Cập nhật danh mục sidebar cho phù hợp với trang Combo
       categories: [
         { name: 'Combo Ăn Dặm', count: 5 },
         { name: 'Combo Nấu Phở/Lẩu', count: 8 },
@@ -259,21 +153,30 @@ export default {
         { name: 'Combo Tiết Kiệm', count: 6 },
         { name: 'Hộp Quà Biếu', count: 4 }
       ],
-      // Cập nhật danh sách sản phẩm thành các gói Combo
       products: [
         { name: "Combo Gia Vị Nấu Phở Bò Hà Nội (Set 5 gói)", price: "85,000đ", oldPrice: "100,000đ", discount: 15, image: "https://placehold.co/300x300?text=Combo+Pho+Bo" },
-        { name: "Combo 6 Hũ Gia Vị Thiết Yếu Nhà Bếp", price: "250,000đ", oldPrice: "300,000đ", discount: 17, image: "https://placehold.co/300x300?text=Combo+Thiet+Yeu" },
-        { name: "Combo Gia Vị Ăn Dặm Hữu Cơ Cho Bé", price: "180,000đ", oldPrice: "210,000đ", discount: 14, image: "https://placehold.co/300x300?text=Combo+An+Dam" },
-        { name: "Combo Nấu Lẩu Thái Chua Cay Trọn Vị", price: "65,000đ", oldPrice: "80,000đ", discount: 19, image: "https://placehold.co/300x300?text=Combo+Lau+Thai" },
-        { name: "Combo Ướp Thịt Nướng BBQ (3 vị)", price: "120,000đ", oldPrice: "150,000đ", discount: 20, image: "https://placehold.co/300x300?text=Combo+BBQ" },
-        { name: "Set Quà Tặng Gia Vị Cao Cấp Vipep", price: "450,000đ", oldPrice: null, discount: null, image: "https://placehold.co/300x300?text=Gift+Set" },
-        { name: "Combo Gia Vị Nấu Bò Kho Ngũ Vị", price: "55,000đ", oldPrice: "65,000đ", discount: 15, image: "https://placehold.co/300x300?text=Combo+Bo+Kho" },
-        { name: "Combo Tiêu Phú Quốc (Đen + Sọ + Hồng)", price: "220,000đ", oldPrice: "250,000đ", discount: 12, image: "https://placehold.co/300x300?text=Combo+Tieu" },
-        { name: "Combo Làm Kim Chi Hàn Quốc Tại Nhà", price: "95,000đ", oldPrice: "110,000đ", discount: 13, image: "https://placehold.co/300x300?text=Combo+Kim+Chi" },
-        { name: "Combo Bột Gia Vị Thảo Mộc (Gừng, Tỏi, Nghệ)", price: "85,000đ", oldPrice: null, discount: null, image: "https://placehold.co/300x300?text=Combo+Bot+Gia+Vi" },
-        { name: "Combo Nấu Chè Dưỡng Nhan Tuyết Yến", price: "150,000đ", oldPrice: "190,000đ", discount: 21, image: "https://placehold.co/300x300?text=Combo+Che" },
-        { name: "Combo Mắc Khén & Hạt Dổi Tây Bắc", price: "185,000đ", oldPrice: null, discount: null, image: "https://placehold.co/300x300?text=Combo+Tay+Bac" }
+        // ... (Giữ nguyên các product của bạn)
       ]
+    }
+  },
+  // 2. Thêm async
+  async mounted() {
+    try {
+      // 3. GỌI API LẤY BANNER VỊ TRÍ 'CATEGORY'
+      const data = await bannerService.getBannersByPosition('CATEGORY');
+      
+      if (data && data.length > 0) {
+        // Gán data thật
+        this.categoryBanners = data;
+      } else {
+        // Fallback data ảo
+        this.categoryBanners = [
+          { id: 98, duongDanAnh: 'https://placehold.co/1920x350/8b572a/ffffff?text=Banner+Sản+Phẩm+1', lienKet: '#', tieuDe: 'Banner Sản Phẩm Chung 1' },
+          { id: 99, duongDanAnh: 'https://placehold.co/1920x350/7eb33d/ffffff?text=Banner+Sản+Phẩm+2', lienKet: '#', tieuDe: 'Banner Sản Phẩm Chung 2' }
+        ];
+      }
+    } catch (error) {
+      console.error("Lỗi lấy banner danh mục:", error);
     }
   },
   methods: {
@@ -312,34 +215,16 @@ export default {
 .nav-link:hover, .nav-link.router-link-active { color: #7eb33d !important; }
 
 /* ================= BANNER SLIDER (CAROUSEL) ================= */
-#comboCarousel {
+#categoryCarousel {
   position: relative;
 }
 .carousel-item {
-  height: 400px;
+  height: 350px;
 }
 .banner-img {
   height: 100%;
   object-fit: cover;
 }
-.overlay-gradient {
-  position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-  background: linear-gradient(to right, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0) 60%);
-  pointer-events: none;
-}
-.banner-caption {
-  top: 50%; left: 8%; transform: translateY(-50%); bottom: auto;
-  z-index: 2;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.5);
-}
-
-/* Animation */
-@keyframes slideRight { from { opacity: 0; transform: translateX(-30px); } to { opacity: 1; transform: translateX(0); } }
-@keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-
-.carousel-item.active .animate-slide-right { animation: slideRight 0.8s ease-out forwards; }
-.carousel-item.active .animate-slide-up { animation: slideUp 0.8s ease-out 0.3s forwards; opacity: 0; }
-.carousel-item.active .animate-fade-in { animation: slideUp 0.8s ease-out 0.6s forwards; opacity: 0; }
 
 /* ================= SIDEBAR ================= */
 .sidebar-title { background-color: #4d3105; color: #fff; padding: 10px 15px; font-size: 16px; font-weight: bold; border-radius: 8px 8px 0 0; margin-bottom: 0; }
@@ -366,11 +251,9 @@ export default {
 .pagination .page-link { color: #333; border: none; margin: 0 3px; border-radius: 4px; font-weight: 600; }
 .pagination .page-item.active .page-link { background-color: #4d3105; color: white; }
 
-/* ================= FOOTER & ANIMATION ================= */
+/* ================= FOOTER ================= */
 .wave-separator { width: 100%; height: 120px; background: #ffffff; position: relative; margin-bottom: -1px; }
 .wave-svg { position: absolute; bottom: 0; width: 100%; height: 120px; display: block; }
-@keyframes shake { 0% { transform: rotate(0deg); } 25% { transform: rotate(10deg); } 75% { transform: rotate(-10deg); } 100% { transform: rotate(0deg); } }
-.shake-animation { animation: shake 1.5s infinite ease-in-out; }
 
 /* FOOTER STYLE */
 .text-vipep-green { color: #28a745 !important; }
@@ -389,12 +272,9 @@ export default {
 .contact-item .label { background: rgba(0, 0, 0, 0.7); color: white; padding: 5px 15px; border-radius: 20px; font-size: 13px; font-weight: 600; margin-right: 10px; opacity: 0; visibility: hidden; transform: translateX(20px); transition: all 0.3s ease; white-space: nowrap; }
 .contact-item:hover .label { opacity: 1; visibility: visible; transform: translateX(0); }
 .contact-item:hover .icon-wrapper { transform: scale(1.1); }
+
 @keyframes pulse-red { 0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(220, 53, 69, 0); } 100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(220, 53, 69, 0); } }
 
-@media (max-width: 768px) {
-  .floating-contact { right: 10px; bottom: 100px; }
-  .icon-wrapper { width: 40px; height: 40px; font-size: 20px; }
-  .contact-item .label { display: none; }
-}
+@media (max-width: 768px) { .floating-contact { right: 10px; bottom: 100px; } .icon-wrapper { width: 40px; height: 40px; font-size: 20px; } .contact-item .label { display: none; } }
 .dropdown-menu li:hover > .dropdown-menu { display: block; top: 0; left: 100%; margin-top: -1px; }
 </style>

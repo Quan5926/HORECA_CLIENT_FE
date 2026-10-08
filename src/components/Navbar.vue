@@ -61,7 +61,7 @@
               <router-link to="/" class="nav-link">TRANG CHỦ</router-link>
             </li>
             <li class="nav-item">
-              <router-link to="/ve-vipep" class="nav-link">VỀ VIPEP</router-link>
+              <router-link to="/gioi-thieu" class="nav-link">VỀ VIPEP</router-link>
             </li>
             
            <li class="nav-item dropdown custom-dropdown">
